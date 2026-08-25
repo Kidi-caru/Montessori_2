@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario | Montessori 3D</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>Montessori 3D</h2>
+    <a href="/dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a href="/inventario" class="activo"><i class="bi bi-box-seam"></i> Inventario</a>
+    <a href="/muebles"><i class="bi bi-house-door"></i> Muebles</a>
+    <a href="/comedores"><i class="bi bi-grid-3x3-gap"></i> Comedores</a>
+    <a href="/basecamas"><i class="bi bi-intersect"></i> Base Camas</a>
+    <a href="/colchones"><i class="bi bi-square"></i> Colchones</a>
+    <a href="/spaceview"><i class="bi bi-box"></i> Simulador 3D</a>
+    <a href="/clientes"><i class="bi bi-people"></i> Clientes</a>
+    <a href="/proveedores"><i class="bi bi-truck"></i> Proveedores</a>
+    <a href="/ventas"><i class="bi bi-cart"></i> Ventas</a>
+    <a href="/reportes"><i class="bi bi-file-earmark-bar-graph"></i> Reportes</a>
+    <a href="/logout" class="text-danger"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
+</div>
+
+<div class="contenido">
+    <h1 class="fw-bold mb-3">📦 Inventario General</h1>
+    <hr>
+
+    {% with mensajes = get_flashed_messages() %}
+        {% if mensajes %}
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ mensajes[0] }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="card shadow-sm border-0 rounded-3 p-4 mb-4">
+        <h3 class="fw-bold text-dark mb-3"><i class="bi bi-plus-circle"></i> Registrar Producto</h3>
+
+        <form action="/guardar_producto" method="POST" enctype="multipart/form-data">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Código</label>
+                    <input type="text" name="codigo" class="form-control" placeholder="Ej: MUE-001" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Nombre</label>
+                    <input type="text" name="nombre" class="form-control" placeholder="Ej: Cama Montessori Nube" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Categoría</label>
+                    <select name="categoria" class="form-select" required>
+                        <option value="" disabled selected>Seleccione una categoría</option>
+                        {% for categoria in categorias %}
+                        <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Material</label>
+                    <input type="text" name="material" class="form-control" placeholder="Ej: Madera de Pino">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Color</label>
+                    <input type="text" name="color" class="form-control" placeholder="Ej: Natural / Blanco">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Precio ($)</label>
+                    <input type="number" step="0.01" name="precio" class="form-control" placeholder="0.00" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Largo (cm)</label>
+                    <input type="number" step="0.01" name="largo" class="form-control" placeholder="0.00" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Ancho (cm)</label>
+                    <input type="number" step="0.01" name="ancho" class="form-control" placeholder="0.00" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Alto (cm)</label>
+                    <input type="number" step="0.01" name="alto" class="form-control" placeholder="0.00" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Stock (Unidades)</label>
+                    <input type="number" name="stock" class="form-control" placeholder="0" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Imagen del Producto</label>
+                    <input type="file" name="imagen" class="form-control" accept="image/*">
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Descripción</label>
+                    <textarea name="descripcion" class="form-control" rows="3" placeholder="Detalles o especificaciones adicionales del producto..."></textarea>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success fw-semibold">
+                    <i class="bi bi-save"></i> Guardar Producto
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <h3 class="fw-bold text-dark m-0"><i class="bi bi-boxes"></i> Inventario de Productos</h3>
+
+            <form action="/buscar_producto" method="GET" class="d-flex gap-2">
+                <input type="text" name="buscar" class="form-control" placeholder="Buscar por código o nombre...">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th style="width: 50px;">ID</th>
+                        <th style="width: 100px;">Imagen</th>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Material</th>
+                        <th>Color</th>
+                        <th>Medidas (L×A×A)</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th style="width: 200px;" class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                    <tr>
+                        <td class="fw-bold">#{{ producto.id }}</td>
+                        <td>
+                            {% if producto.imagen %}
+                            <img src="{{ url_for('static', filename='uploads/' + producto.imagen) }}" 
+                                 alt="{{ producto.nombre }}" 
+                                 width="70" 
+                                 height="70" 
+                                 class="rounded img-thumbnail object-fit-cover">
+                            {% else %}
+                            <span class="badge bg-light text-muted border">Sin foto</span>
+                            {% endif %}
+                        </td>
+                        <td class="fw-semibold">{{ producto.codigo }}</td>
+                        <td>{{ producto.nombre }}</td>
+                        <td><span class="badge bg-secondary-subtle text-secondary border">{{ producto.categoria }}</span></td>
+                        <td>{{ producto.material if producto.material else 'N/A' }}</td>
+                        <td>{{ producto.color if producto.color else 'N/A' }}</td>
+                        <td class="small">{{ producto.largo }} × {{ producto.ancho }} × {{ producto.alto }} cm</td>
+                        <td class="fw-bold text-success">$ {{ "{:,.2f}".format(producto.precio) if producto.precio else '0.00' }}</td>
+                        <td>
+                            {% if producto.stock > 0 %}
+                                <span class="badge bg-success-subtle text-success border border-success">{{ producto.stock }}</span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger border border-danger">0</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="/editar_producto/{{ producto.id }}" class="btn btn-warning text-white" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="/eliminar_producto/{{ producto.id }}" class="btn btn-danger" onclick="return confirmarEliminar()" title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                                <a href="/spaceview/{{ producto.id }}" class="btn btn-info text-white" title="SpaceView 3D">
+                                    <i class="bi bi-box"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="11" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-2 d-block mb-1"></i> No se encontraron productos registrados en el inventario.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/scrip.js') }}"></script>
+
+</body>
+</html>

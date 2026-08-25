@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proveedores | Montessori 3D</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>Montessori 3D</h2>
+    <a href="/dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a href="/inventario"><i class="bi bi-box-seam"></i> Inventario</a>
+    <a href="/muebles"><i class="bi bi-house-door"></i> Muebles </a>
+    <a href="/comedores"><i class="bi bi-grid-3x3-gap"></i> Comedores </a>
+    <a href="/basecamas"><i class="bi bi-intersect"></i> Base Camas </a>
+    <a href="/colchones"><i class="bi bi-square"></i> Colchones </a>
+    <a href="/spaceview"><i class="bi bi-box"></i> Simulador 3D </a>
+    <a href="/clientes"><i class="bi bi-people"></i> Clientes </a>
+    <a href="/proveedores" class="activo"><i class="bi bi-truck"></i> Proveedores </a>
+    <a href="/ventas"><i class="bi bi-cart"></i> Ventas </a>
+    <a href="/reportes"><i class="bi bi-file-earmark-bar-graph"></i> Reportes </a>
+    <a href="/logout" class="text-danger"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
+</div>
+
+<div class="contenido">
+    <h1 class="fw-bold mb-3">🚚 Gestión de Proveedores</h1>
+    <hr>
+
+    {% with mensajes = get_flashed_messages() %}
+        {% if mensajes %}
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ mensajes[0] }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="card shadow-sm border-0 rounded-3 p-4 mb-4">
+        <h3 class="fw-bold mb-3"><i class="bi bi-truck-front-fill me-2"></i>Registrar Proveedor</h3>
+
+        <form action="/guardar_proveedor" method="POST">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Empresa / Nombre comercial</label>
+                    <input type="text" name="empresa" class="form-control" placeholder="Ej: Maderas del Norte S.A.S." required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Nombre de Contacto</label>
+                    <input type="text" name="contacto" class="form-control" placeholder="Ej: Carlos Gómez" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Teléfono</label>
+                    <input type="text" name="telefono" class="form-control" placeholder="Ej: 3109876543" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Correo Electrónico</label>
+                    <input type="email" name="correo" class="form-control" placeholder="ejemplo@proveedor.com" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Ciudad</label>
+                    <input type="text" name="ciudad" class="form-control" placeholder="Ej: Bogotá" required>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success fw-semibold px-4">
+                    <i class="bi bi-save me-1"></i> Registrar Proveedor
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3 p-4">
+        <h3 class="fw-bold mb-3"><i class="bi bi-list-task me-2"></i>Lista de Proveedores</h3>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-striped align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Empresa</th>
+                        <th>Contacto</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Ciudad</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if proveedores %}
+                        {% for proveedor in proveedores %}
+                        <tr>
+                            <td class="fw-bold">{{ proveedor.id }}</td>
+                            <td>{{ proveedor.empresa }}</td>
+                            <td>{{ proveedor.contacto }}</td>
+                            <td>{{ proveedor.telefono }}</td>
+                            <td>{{ proveedor.correo }}</td>
+                            <td>{{ proveedor.ciudad }}</td>
+                            <td class="text-center">
+                                <a href="/editar_proveedor/{{ proveedor.id }}" class="btn btn-warning btn-sm text-white fw-semibold">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </a>
+                                <a href="/eliminar_proveedor/{{ proveedor.id }}" class="btn btn-danger btn-sm fw-semibold" onclick="return confirm('¿Está seguro de eliminar este proveedor?')">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                <i class="bi bi-truck fs-2 d-block mb-1"></i>
+                                No hay proveedores registrados en la base de datos.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
