@@ -13,58 +13,72 @@ body{
 
 }
 
-.fondo-login{
-
-    background:linear-gradient(135deg,#0f4c81,#4CAF50);
-
-    height:100vh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
+.fondo-login {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #081b2e;
+    background-image: 
+        radial-gradient(circle at 15% 15%, rgba(76, 175, 80, 0.35) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(15, 76, 129, 0.6) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(15, 76, 129, 0.3) 0%, transparent 60%);
 }
 
-.contenedor-login{
-
-    width:100%;
-
-    max-width:430px;
-
+.login-card,
+.contenedor-login .card {
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    border-radius: 20px !important;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.94) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.login-card{
-
-    border:none;
-
-    border-radius:15px;
-
-    padding:40px;
-
-    background:white;
-
+.login-card:hover,
+.contenedor-login .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3) !important;
 }
 
-.login-card h1{
-
-    color:#0f4c81;
-
-    font-weight:bold;
-
+.login-card h1 {
+    color: #0f4c81;
+    font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
-.login-card p{
-
-    color:#777;
-
+.login-card p {
+    color: #64748b;
 }
 
-.login-card button{
+.form-control {
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    padding: 10px 14px;
+    transition: all 0.2s ease;
+}
 
-    margin-top:10px;
+.form-control:focus {
+    border-color: #0f4c81;
+    box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.15);
+}
 
+.login-card button,
+.contenedor-login button[type="submit"] {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(15, 76, 129, 0.2);
+    transition: all 0.25s ease;
+}
+
+.login-card button:hover,
+.contenedor-login button[type="submit"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(15, 76, 129, 0.3);
 }
 
 .sidebar{
@@ -890,6 +904,7 @@ transform:rotate(360deg);
     border:2px solid #4CAF50;
 
 }
+
 
 @media print{
 
